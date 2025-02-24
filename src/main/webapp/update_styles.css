@@ -19,13 +19,13 @@ body {
 }
 
 .name-label{
-	width:15%;
+	width:17%;
 	font-weight: bold;
     color: #333;
 }
 
 .name-input{
-	width:30%;
+	width:28%;
 	border: 1px solid #00356B; 
 	border-radius: 4px;
 	padding: 5px;
@@ -41,13 +41,13 @@ body {
 }
 
 .ad-label {
-	width:13%;
+	width:17%;
 	font-weight: bold;
     color: #333;
 }
 
 .ad-input  {
-	width:32%;
+	width:28%;
 	border: 1px solid #00356B; 
 	border-radius: 4px;
 	padding: 5px;
@@ -55,7 +55,7 @@ body {
 
 #signup_form {
     text-align: center;
-    color: #007BFF;
+    color: #00356B;
 }
 
 .address {
@@ -82,6 +82,18 @@ body {
     color: #333;
 }
 
+.generic_label::placeholder{
+	font-size: 16px;
+}
+
+.name_label::placeholder{
+	font-size: 16px;
+}
+
+.add_label::placeholder{
+	font-size: 16px;
+}
+
 .gender_group {
     display: flex;
     gap: 10px;
@@ -91,50 +103,58 @@ body {
 }
 
 .sub_btn {
-    background-color: #228822;
+    background: linear-gradient(135deg, #34d399, #059669);
     color: white;
     border: none;
     border-radius: 4px;
     padding: 10px 15px;
     cursor: pointer;
-    font-size: 16px;
-    margin: 10px 5px;
-    transition: background-color 0.3s;
+    font-size: 18px;
+    margin: 10px 0;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+    gap: 20px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sub_btn:hover {
-    background-color: #006400; 
+    background: linear-gradient(135deg, #059669, #046c4e);
 }
 
 .view_btn{
-	background-color: #007BFF;
+	background: linear-gradient(135deg, #007BFF, #0056b3);
     color: white;
     border: none;
     border-radius: 4px;
     padding: 10px 15px;
     cursor: pointer;
-    font-size: 16px;
-    margin: 10px 5px;
-    transition: background-color 0.3s;
+    font-size: 18px;
+    margin: 10px 0;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .view_btn:hover {
-    background-color: #0056b3; 
+	background: linear-gradient(135deg, #004080, #00264d);    
 }
 
 .reset_btn {
-    background-color: #6c757d;
+    background: linear-gradient(135deg, #9ca3af, #4b5563);
     color: white;
     border: none;
     border-radius: 4px;
     padding: 10px 15px;
     cursor: pointer;
-    font-size: 16px;
-    margin: 10px 5px;
-    transition: background-color 0.3s;
+    font-size: 18px;
+    margin: 10px 0;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .reset_btn:hover {
-    background-color: #5a6268; 
+   background: linear-gradient(135deg, #4b5563, #374151);
+
 }
 

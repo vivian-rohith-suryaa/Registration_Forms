@@ -53,9 +53,6 @@
 
     <div class="table_div">
         <h1 id="user_details">User Details</h1>
-
-        <form class="form_container" action="FormServlet" method="post">
-        	
         	<table class="user_table">
                 <tr class="table_row_header">
                     <th class="table_header">Select</th>
@@ -68,13 +65,7 @@
                     <th class="table_header">PAN Number</th>
                     <th class="table_header">E-Mail</th>
                     <th class="table_header">Phone Number</th>
-                    <th class="table_header">Address 1</th>
-                    <th class="table_header">Address 2</th>
-                    <th class="table_header">District</th>
-                    <th class="table_header">State</th>
-                    <th class="table_header">Country</th>
-                    <th class="table_header">Pin-Code</th>
-                    <th class="table_header">Password</th>
+
                 </tr>
                 <%
                     if (users != null) {
@@ -91,13 +82,6 @@
                     <td class="table_cell"><%= user.getPan() %></td>
                     <td class="table_cell"><%= user.getEmail() %></td>
                     <td class="table_cell"><%= user.getPhone() %></td>
-                    <td class="table_cell"><%= user.getAddress1() %></td>
-                    <td class="table_cell"><%= user.getAddress2() %></td>
-                    <td class="table_cell"><%= user.getDistrict() %></td>
-                    <td class="table_cell"><%= user.getState() %></td>
-                    <td class="table_cell"><%= user.getCountry() %></td>
-                    <td class="table_cell"><%= user.getPincode() %></td>
-                    <td class="table_cell"><%= user.getPassword() %></td>
                 </tr>
                 <%  } } %>
             </table>
@@ -114,7 +98,6 @@
 			       alert("<%= message %>");
 			   </script>
 			<% } %>
-        </form>
     </div>
 </body>
 </html>
