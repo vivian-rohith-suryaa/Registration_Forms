@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.forms.user.User;
+import com.forms.exception.InvalidFormInputException;
 
 @WebServlet("/FormServlet")
 public class FormServlet extends HttpServlet {
@@ -58,58 +58,64 @@ public class FormServlet extends HttpServlet {
    	    String pincode = request.getParameter("pincode");
     	String password = request.getParameter("setpassword");
     	
-    	checkNullField(firstName, request, response);
-    	checkEmptyField(firstName, request, response);
+    	try {
+	    	checkNullField(firstName, request, response);
+	    	checkEmptyField(firstName, request, response);
+	    	
+	    	checkNullField(lastName, request, response);
+	    	checkEmptyField(lastName, request, response);
+	    	
+	    	checkNullField(dob, request, response);
+	    	checkEmptyField(dob, request, response);
+	    	
+	    	checkNullField(gender, request, response);
+	    	checkEmptyField(gender, request, response);
+	    	
+	    	checkNullField(aadhar, request, response);
+	    	checkEmptyField(aadhar, request, response);
+	    	
+	    	checkNullField(pan, request, response);
+	    	checkEmptyField(pan, request, response);
+	    	
+	    	checkNullField(email, request, response);
+	    	checkEmptyField(email, request, response);
+	    	
+	    	checkNullField(phone, request, response);
+	    	checkEmptyField(phone, request, response);
+	
+	    	checkNullField(address1, request, response);
+	    	checkEmptyField(address1, request, response);
+	
+	    	checkNullField(district, request, response);
+	    	checkEmptyField(district, request, response);
+	
+	    	checkNullField(state, request, response);
+	    	checkEmptyField(state, request, response);
+	
+	    	checkNullField(country, request, response);
+	    	checkEmptyField(country, request, response);
+	
+	    	checkNullField(pincode, request, response);
+	    	checkEmptyField(pincode, request, response);
+	
+	    	checkNullField(password, request, response);
+	    	checkEmptyField(password, request, response);
+	    	
+	    	checkValidAadhar(aadhar,request,response);
+	    	
+	    	checkValidPAN(pan,request,response);
+	    	
+	    	checkValidEmail(email,request,response);
+	    	
+	    	checkValidPhone(phone,request,response);
+	    	
+	    	checkPasswordStrength(password,request,response);
+    	}
     	
-    	checkNullField(lastName, request, response);
-    	checkEmptyField(lastName, request, response);
-    	
-    	checkNullField(dob, request, response);
-    	checkEmptyField(dob, request, response);
-    	
-    	checkNullField(gender, request, response);
-    	checkEmptyField(gender, request, response);
-    	
-    	checkNullField(aadhar, request, response);
-    	checkEmptyField(aadhar, request, response);
-    	
-    	checkNullField(pan, request, response);
-    	checkEmptyField(pan, request, response);
-    	
-    	checkNullField(email, request, response);
-    	checkEmptyField(email, request, response);
-    	
-    	checkNullField(phone, request, response);
-    	checkEmptyField(phone, request, response);
-
-    	checkNullField(address1, request, response);
-    	checkEmptyField(address1, request, response);
-
-    	checkNullField(district, request, response);
-    	checkEmptyField(district, request, response);
-
-    	checkNullField(state, request, response);
-    	checkEmptyField(state, request, response);
-
-    	checkNullField(country, request, response);
-    	checkEmptyField(country, request, response);
-
-    	checkNullField(pincode, request, response);
-    	checkEmptyField(pincode, request, response);
-
-    	checkNullField(password, request, response);
-    	checkEmptyField(password, request, response);
-    	
-    	checkValidAadhar(aadhar,request,response);
-    	
-    	checkValidPAN(pan,request,response);
-    	
-    	checkValidEmail(email,request,response);
-    	
-    	checkValidPhone(phone,request,response);
-    	
-    	checkPasswordStrength(password,request,response);
-    	
+    	catch(InvalidFormInputException e) {
+    		request.setAttribute("message", "Invalid Form Input!!!!!");
+    	}
+	    	
     	try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD)) {
     		if (userIdParam != null && !userIdParam.isEmpty()) {
    	            int userId = Integer.parseInt(userIdParam);
@@ -304,7 +310,7 @@ public class FormServlet extends HttpServlet {
         }
     }
 
-    public void checkNullField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkNullField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	if(field==null) {
     		request.setAttribute("message", "All fields marked with * are required.");
     	    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
@@ -313,7 +319,7 @@ public class FormServlet extends HttpServlet {
     	}
     }
     
-    public void checkEmptyField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkEmptyField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	if(field.trim().isEmpty()) {
     		request.setAttribute("message", "All fields marked with * are required.");
     	    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
@@ -322,7 +328,7 @@ public class FormServlet extends HttpServlet {
     	}
     }
 
-    public void checkValidEmail(String email,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkValidEmail(String email,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	
     	String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     	Pattern pattern = Pattern.compile(emailRegex);
@@ -335,7 +341,7 @@ public class FormServlet extends HttpServlet {
     	}
     }
 
-    public void checkValidPhone(String phone,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkValidPhone(String phone,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	
     	if(!(phone.matches("\\d{10}"))) {
     		request.setAttribute("message", "Phone number must be 10 digits.");
@@ -345,7 +351,7 @@ public class FormServlet extends HttpServlet {
     	}
     }
 
-    public void checkValidAadhar(String aadhar,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkValidAadhar(String aadhar,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	
     	if(!(aadhar.matches("\\d{12}"))) {
     		request.setAttribute("message", "Aadhar number must be 12 digits.");
@@ -355,7 +361,7 @@ public class FormServlet extends HttpServlet {
     	}
     }
     
-    public void checkValidPAN(String pan,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkValidPAN(String pan,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	
     	String panRegex = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
     	Pattern pattern = Pattern.compile(panRegex);
@@ -368,7 +374,7 @@ public class FormServlet extends HttpServlet {
     	}
     }
  
-    public void checkPasswordStrength(String password,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void checkPasswordStrength(String password,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
     	String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,20}$";
     	Pattern pattern = Pattern.compile(passwordRegex);
     	Matcher matcher = pattern.matcher(password);
