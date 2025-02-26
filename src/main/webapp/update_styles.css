@@ -1,56 +1,118 @@
-@charset "UTF-8";
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #e9ecef; 
-    margin: 0;
-    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+header{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	box-sizing: border-box;
+	height: 70px;
+	background: #fff;
+	border: none;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.banner_holder{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin:0px 30px 0px 30px;
+	height: 70px;
+}
+
+.banner_left{
+	display: flex;
+	gap:10px;
+	flex-direction: row;
+	height: 70px;
+}
+
+.logo_img_holder{
+	width:70px;
+}
+
+.logo-image {
+    width: 100%;
+    height: auto;
+  
+}
+
+#title{
+	font-weight: bold;
+	font-family: 'Garamond',serif;
+	font-size: 30px;
+}
+
+#view_id{
+	width: 40px;
+	height: 40px;
+}
+
+main{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 90%;
+}
+
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: fit-content;
+    height: auto;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.background {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 10px;
+}
+
+.background img {
+	
+    width: 35vw;
+    height: 65vh;
 }
 
 .form_div{
-	padding: 10px;
-}
-
-.name_group {
 	display: flex;
-	align-items: center;
-	justify-content:space-between;
-	margin-bottom: 10px;
-}
-
-.name-label{
-	width:17%;
-	font-weight: bold;
-    color: #333;
-}
-
-.name-input{
-	width:28%;
-	border: 1px solid #00356B; 
-	border-radius: 4px;
-	padding: 5px;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 
 .form_container {
-    background-color: #ffffff; 
+	max-width: 900px;
+    padding: 20px 50px;
+    background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    max-width: 600px;
-    margin: auto;
 }
 
-.ad-label {
-	width:17%;
-	font-weight: bold;
-    color: #333;
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
 }
 
-.ad-input  {
-	width:28%;
-	border: 1px solid #00356B; 
-	border-radius: 4px;
-	padding: 5px;
+.form-group {
+	display:flex;
+	flex-direction:column;
+	margin:0px 32px 16px 0px;
+    min-width: 250px;
 }
 
 #signup_form {
@@ -58,39 +120,37 @@ body {
     color: #00356B;
 }
 
-.address {
-	display: flex;
-	align-items:center;
-	justify-content: space-between;	
-	margin-bottom: 10px;
-}
-
-
-.form_input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0 15px 0;
-    border: 1px solid #00356B; 
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    box-sizing: border-box;
-}
-
 .generic_label {
+	margin-bottom:5px;
     font-weight: bold;
     color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.form_input {
+	all:unset; 
+    width: 100%;
+    padding: 10px 16px ;
+  	border-radius: 30px;
+    font-size: 14px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); 
+    
+}
+
+.address_input#address1 {
+	width: 100%;
+	padding: 10px;	
+	align-items: flex-start;
+}
+
+.address_input#address2 {
+	margin-top:20px;
+	width: 100%;
+	padding: 10px;	
 }
 
 .generic_label::placeholder{
-	font-size: 16px;
-}
-
-.name_label::placeholder{
-	font-size: 16px;
-}
-
-.add_label::placeholder{
 	font-size: 16px;
 }
 
@@ -98,8 +158,9 @@ body {
     display: flex;
     gap: 10px;
     margin: 10px 0;
-    padding: 5px;
+    margin-left: 10px;
     align-items: center;
+    justify-content: space-evenly;
 }
 
 .sub_btn {
@@ -121,24 +182,6 @@ body {
     background: linear-gradient(135deg, #059669, #046c4e);
 }
 
-.view_btn{
-	background: linear-gradient(135deg, #007BFF, #0056b3);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 18px;
-    margin: 10px 0;
-    margin-right: 15px;
-    transition: all 0.3s ease;
-    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.view_btn:hover {
-	background: linear-gradient(135deg, #004080, #00264d);    
-}
-
 .reset_btn {
     background: linear-gradient(135deg, #9ca3af, #4b5563);
     color: white;
@@ -157,4 +200,3 @@ body {
    background: linear-gradient(135deg, #4b5563, #374151);
 
 }
-

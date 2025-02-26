@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -141,7 +140,7 @@ public class FormServlet extends HttpServlet {
     	            else {
     	                request.setAttribute("message", "Update Failed!");
     	            }
-    	            RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
+    	            RequestDispatcher dispatcher = request.getRequestDispatcher("forms_view.jsp");
     	            dispatcher.forward(request, response);
 
    	            }
@@ -192,11 +191,11 @@ public class FormServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        String userIdsParam = request.getParameter("userIds");
-        
+        String userIdParam = request.getParameter("userId"); 
+        int userId = 0;
         
         if ("edit".equals(action)) {
-            int userId = Integer.parseInt(request.getParameter("userId"));
+        	userId = Integer.parseInt(userIdParam);
             String query = "SELECT * FROM user_details WHERE user_id = ?";
 
             try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD);
@@ -226,6 +225,7 @@ public class FormServlet extends HttpServlet {
                     request.setAttribute("selectedUser", user);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
                     dispatcher.forward(request, response);
+                    rst.close();
                 }
                 else {
                     response.sendRedirect("forms_view.jsp?error=user_not_found");
@@ -238,40 +238,30 @@ public class FormServlet extends HttpServlet {
 
         } 
         else if("delete".equals(action)) {
+        	userId = Integer.parseInt(userIdParam);
+            String deleteQuery = "DELETE FROM user_details WHERE user_id = ?";
 
-            if (userIdsParam != null && !userIdsParam.isEmpty()) {
-                String[] userIds = userIdsParam.split(",");
-                String placeholders = String.join(",", Collections.nCopies(userIds.length, "?"));
-
-                String deleteQuery = "DELETE FROM user_details WHERE user_id IN (" + placeholders + ")";
-
-                try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD);
-                		PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
-
-                    for (int i = 0; i < userIds.length; i++) {
-                        stmt.setInt(i + 1, Integer.parseInt(userIds[i]));
-                    }
+            try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD);
+            	 PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+            	
+            	stmt.setInt(1, userId);
                     
-                    int rowsDeleted = stmt.executeUpdate();
-                    if (rowsDeleted > 0) {
-                        request.setAttribute("message", "Users Deleted Successfully!");
-                    } else {
-                        request.setAttribute("message", "Deletion Failed!");
-                    }
+            	int rowsDeleted = stmt.executeUpdate();
+            	if (rowsDeleted > 0) {
+            		request.setAttribute("message", "Users Deleted Successfully!");
+                }
+            	else {
+            		request.setAttribute("message", "Deletion Failed!");
+                }
 
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("FormServlet?action=view");
-                    dispatcher.forward(request, response);
-
-                } catch (SQLException e) {
-					e.printStackTrace();
-					response.sendRedirect("forms_view.jsp?error=db_error");
-				}
-            }
-            else {
-                request.setAttribute("message", "No Users Selected!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("forms_view.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("FormServlet?action=view");
                 dispatcher.forward(request, response);
-            }
+
+                }
+            catch (SQLException e) {
+				e.printStackTrace();
+				response.sendRedirect("forms_view.jsp?error=db_error");
+			}
         }
 
         else if("view".equals(action)){
@@ -334,7 +324,7 @@ public class FormServlet extends HttpServlet {
 
     public void checkValidEmail(String email,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+    	String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     	Pattern pattern = Pattern.compile(emailRegex);
     	Matcher matcher = pattern.matcher(email);
     	if(!(matcher.matches())) {
