@@ -3,6 +3,12 @@
 <%@ page import="com.forms.user.User"%>
 
 <%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Expires", "0");
+%>
+
+<%
 User user = (User) request.getAttribute("selectedUser");
 if (user == null) {
 	user = new User();
@@ -15,22 +21,17 @@ if (user == null) {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Account Registration</title>
-	<link rel="stylesheet" href="update_styles.css">
+	<link rel="stylesheet" href="form_styles.css">
 </head>
 <body>
-	<header>
-		<div class="banner_holder">
-			<div class="banner_left">
-				<div class="logo_img_holder">
-					<img class="logo-image" src="images/zoho_logo.jpg" alt="Logo">
-				</div>
-				<h1 id="title">Z-Register</h1>
-			</div>
-			<div class="banner_right">
-				<img id="view_id" alt="View" src="images/view.svg" onclick="window.location.href='FormServlet?action=view'" title="View Users ">
-			</div>
-		</div>
-	</header>
+	
+	<% request.setAttribute("alternative","View Users"); %>
+	<% request.setAttribute("image","view.svg"); %>
+	<% request.setAttribute("action","window.location.href='FormServlet?action=view'"); %>
+	<% request.setAttribute("title", "View-Users"); %>
+	<% request.setAttribute("icon_name", "View Users"); %>
+	
+	<%@ include file="Form_Header.jsp"%>
 
 	<main>
 		<div class="container">
@@ -45,16 +46,27 @@ if (user == null) {
 					<h2 id="signup_form">Account Registration Details</h2>
 
 					<input type="hidden" name="user_id" value="<%=user.getUserId() > 0 ? user.getUserId() : ""%>">
+					
+					<%
+					String message = (String) request.getAttribute("message");
+					if (message != null) {
+					%>
+						<div class="error_container"><%= message %></div>
+						<% request.removeAttribute(message); %>
+					<%
+					}
+					
+					%>
 
 					<div class="form-row">
 						<div class="form-group">
 							<label class="generic_label" for="fname">First Name:<span style="color: red; font-weight: bold; margin-left: 5px;">*</span></label>
-							<input class="form_input" type="text" id="fname" name="fname" value="<%=user.getFirstName() != null ? user.getFirstName() : ""%>" placeholder="First_Name" autofocus required pattern="[A-Za-z]+" title="Only alphabets allowed">
+							<input class="form_input" type="text" id="fname" name="fname" value="<%=user.getFirstName() != null ? user.getFirstName() : ""%>" placeholder="First_Name" autofocus required pattern="[A-Za-z.\s]+" title="Only alphabets allowed">
 						</div>
 
 						<div class="form-group">
-							<label class="generic_label" for="lname">Last Name:<span style="color: red; font-weight: bold; margin-left: 5px;">*</span></label>
-							<input class="form_input" type="text" id="lname" name="lname" value="<%=user.getLastName() != null ? user.getLastName() : ""%>" placeholder="Last_Name" pattern="[A-Za-z]+" title="Only alphabets allowed">
+							<label class="generic_label" for="lname">Last Name:</label>
+							<input class="form_input" type="text" id="lname" name="lname" value="<%=user.getLastName() != null ? user.getLastName() : ""%>" placeholder="Last_Name" pattern="[A-Za-z.\s]+" title="Only alphabets allowed">
 						</div>
 						
 					</div>
@@ -86,16 +98,16 @@ if (user == null) {
 
 						<div class="form-group">
 							<label class="generic_label" for="pan">PAN Number:<span style="color: red; font-weight: bold; margin-left: 5px;">*</span></label>
-							<input class="form_input" type="text" id="pan" name="pan" value="<%=user.getPan() != null ? user.getPan() : ""%>" placeholder="PAN_Number" required pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="PAN format: ABCDE1234F">
+							<input class="form_input" type="text" id="pan" name="pan" value="<%=user.getPan() != null ? user.getPan() : ""%>" placeholder="PAN_Number" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required  title="PAN format: ABCDE1234F">
 						</div>
 					</div>
-
+					
 					<div class="form-row">
 						<div class="form-group">
 							<label class="generic_label" for="email">E-Mail Id:<span style="color: red; font-weight: bold; margin-left: 5px;">*</span></label>
-							<input class="form_input" type="email" id="email" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" title="E-Mail Format: abcd@xyz.com" value="<%=user.getEmail() != null ? user.getEmail() : ""%>" placeholder="Email_Address" required>
+							<input class="form_input" type="email" id="email" name="email" title="E-Mail Format: abcd@xyz.com" value="<%=user.getEmail() != null ? user.getEmail() : ""%>" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" placeholder="Email_Address" required>
 						</div>
-
+									
 						<div class="form-group">
 							<label class="generic_label" for="phone">Phone Number:<span style="color: red; font-weight: bold; margin-left: 5px;">*</span></label>
 							<input class="form_input" type="tel" id="phone" name="phone" value="<%=user.getPhone() != null ? user.getPhone() : ""%>" placeholder="Phone_Number" required pattern="[0-9]{10}" title="Phone number must be 10 digits">
@@ -156,17 +168,6 @@ if (user == null) {
 					<button class="reset_btn" type="reset" id="reset">Reset</button>
 				</form>
 			</div>
-
-			<%
-			String message = (String) request.getAttribute("message");
-			if (message != null) {
-			%>
-			<script>
-			       alert("<%=message%>");
-			</script>
-			<%
-			}
-			%>
 
 		</div>
 

@@ -1,46 +1,46 @@
 package com.forms.servlet;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.forms.db.DBUtil;
+import com.forms.util.ValidationUtil;
 import com.forms.user.User;
-import com.forms.exception.InvalidFormInputException;
 
 @WebServlet("/FormServlet")
 public class FormServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/form_registration_db";
-    private static final String JDBC_USER = "vvn";
-    private static final String JDBC_PSWD = "root";
-
+    
+    DBUtil dbWorker = new DBUtil();
+    boolean result = false;
+    User user;
+    
     @Override
     public void init() throws ServletException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } 
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	throw new ServletException("Driver Class not found!!!!!");
         }
-    }	
-
+    }
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	    	
     	String action = request.getParameter("action");
+    	
     	String userIdParam = request.getParameter("user_id");
+    	int userId = 0;
+
+    	if (userIdParam != null && !userIdParam.isEmpty()) {
+    	    userId = Integer.parseInt(userIdParam);
+    	}
 
    	    String firstName = request.getParameter("fname");
     	String lastName = request.getParameter("lname");
@@ -57,332 +57,106 @@ public class FormServlet extends HttpServlet {
    	    String country = request.getParameter("country");
    	    String pincode = request.getParameter("pincode");
     	String password = request.getParameter("setpassword");
+    	String confirmPassword = request.getParameter("confirmpassword");
+	    	 
+    	if(ValidationUtil.checkEmptyField(firstName, request, response)) {return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(lastName, request, response)){return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(dob, request, response)) {return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(gender, request, response)) {return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(aadhar, request, response)) {return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(pan, request, response)) {return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(email, request, response)) {return;}
+	    	
+    	if(ValidationUtil.checkEmptyField(phone, request, response)) {return;}
+	
+    	if(ValidationUtil.checkEmptyField(password, request, response)) {return;}
     	
-    	try {
-	    	checkNullField(firstName, request, response);
-	    	checkEmptyField(firstName, request, response);
-	    	
-	    	checkNullField(lastName, request, response);
-	    	checkEmptyField(lastName, request, response);
-	    	
-	    	checkNullField(dob, request, response);
-	    	checkEmptyField(dob, request, response);
-	    	
-	    	checkNullField(gender, request, response);
-	    	checkEmptyField(gender, request, response);
-	    	
-	    	checkNullField(aadhar, request, response);
-	    	checkEmptyField(aadhar, request, response);
-	    	
-	    	checkNullField(pan, request, response);
-	    	checkEmptyField(pan, request, response);
-	    	
-	    	checkNullField(email, request, response);
-	    	checkEmptyField(email, request, response);
-	    	
-	    	checkNullField(phone, request, response);
-	    	checkEmptyField(phone, request, response);
-	
-	    	checkNullField(address1, request, response);
-	    	checkEmptyField(address1, request, response);
-	
-	    	checkNullField(district, request, response);
-	    	checkEmptyField(district, request, response);
-	
-	    	checkNullField(state, request, response);
-	    	checkEmptyField(state, request, response);
-	
-	    	checkNullField(country, request, response);
-	    	checkEmptyField(country, request, response);
-	
-	    	checkNullField(pincode, request, response);
-	    	checkEmptyField(pincode, request, response);
-	
-	    	checkNullField(password, request, response);
-	    	checkEmptyField(password, request, response);
-	    	
-	    	checkValidAadhar(aadhar,request,response);
-	    	
-	    	checkValidPAN(pan,request,response);
-	    	
-	    	checkValidEmail(email,request,response);
-	    	
-	    	checkValidPhone(phone,request,response);
-	    	
-	    	checkPasswordStrength(password,request,response);
-    	}
+    	if(ValidationUtil.checkValidAadhar(aadhar,request,response)) {return;}
     	
-    	catch(InvalidFormInputException e) {
-    		request.setAttribute("message", "Invalid Form Input!!!!!");
-    	}
+    	if(ValidationUtil.checkValidPAN(pan,request,response)) {return;}
 	    	
-    	try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD)) {
-    		if (userIdParam != null && !userIdParam.isEmpty()) {
-   	            int userId = Integer.parseInt(userIdParam);
-   	            String updateQuery = "UPDATE user_details SET first_name=?, last_name=?, date_of_birth=?, gender=?, aadhar_no=?, pan_no=?, email=?, phone=?, address1=?, address2=?, district=?, state=?, country=?, pincode=?, password=? WHERE user_id=?";
-    	            
-   	            try (PreparedStatement stmt = conn.prepareStatement(updateQuery)) {
-   	                stmt.setString(1, firstName);
-    	            stmt.setString(2, lastName);
-    	            stmt.setString(3, dob);
-    	            stmt.setString(4, gender);
-    	            stmt.setString(5, aadhar);
-    	            stmt.setString(6, pan);
-    	            stmt.setString(7, email);
-    	            stmt.setString(8, phone);
-    	            stmt.setString(9, address1);
-    	            stmt.setString(10, address2);
-    	            stmt.setString(11, district);
-    	            stmt.setString(12, state);
-    	            stmt.setString(13, country);
-    	            stmt.setString(14, pincode);
-    	            stmt.setString(15, password);
-    	            stmt.setInt(16, userId);
-    	            
-    	            int rowsUpdated = stmt.executeUpdate();
-    	            if (rowsUpdated > 0) {
-    	                request.setAttribute("message", "Update Successful!");
-    	            } 
-    	            else {
-    	                request.setAttribute("message", "Update Failed!");
-    	            }
-    	            RequestDispatcher dispatcher = request.getRequestDispatcher("forms_view.jsp");
-    	            dispatcher.forward(request, response);
-
-   	            }
-
-    	    }
-            else if ("submit".equals(action)) {
-            	String insertQuery = "INSERT INTO user_details (first_name, last_name, date_of_birth, gender, aadhar_no, pan_no, email, phone, address1, address2, district, state, country, pincode, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            	try (PreparedStatement stmt = conn.prepareStatement(insertQuery)) {
-            		stmt.setString(1, firstName);
-            		stmt.setString(2, lastName);
-            		stmt.setString(3, dob);
-            		stmt.setString(4, gender);
-            		stmt.setString(5, aadhar);
-            		stmt.setString(6, pan);
-            		stmt.setString(7, email);
-            		stmt.setString(8, phone);
-            		stmt.setString(9, address1);
-            		stmt.setString(10, address2);
-            		stmt.setString(11, district);
-            		stmt.setString(12, state);
-            		stmt.setString(13, country);
-            		stmt.setString(14, pincode);
-            		stmt.setString(15, password);
-            		
-            		int rowsInserted = stmt.executeUpdate();
-            		if (rowsInserted > 0) {
-            		    request.setAttribute("message", "Registration Successful!");
-            		} 
-            		else {
-            		    request.setAttribute("message", "Registration Failed!");
-            		}
-            		RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-            		dispatcher.forward(request, response);
-            	}
-            }
+    	if(ValidationUtil.checkValidEmail(email,request,response)) {return;}
+	    	
+    	if(ValidationUtil.checkValidPhone(phone,request,response)) {return;}
+	    	
+    	if(ValidationUtil.checkPasswordStrength(password,request,response)) {return;}
+    	
+    	if(ValidationUtil.matchPassword(password, confirmPassword, request, response)) {return;}
+    	
+        user = new User(userId, firstName, lastName, dob, gender, aadhar, pan, email, phone, address1,address2, district, state, country, pincode, password);
+    	
+    	if ("update".equals(action)) {
+    		result = dbWorker.updateUser(user);
+    		if(result) {
+    			request.setAttribute("message", "Update Successful");
+    		}
+    		else {
+    			request.setAttribute("message", "Update Failed");
+    		}
+    		FormServlet.forwardDispatcher(request, response,"User_Form.jsp");
+    	}
+    	else if ("submit".equals(action)) {
+    		result = dbWorker.submitUser(user);
+    		if(result) {
+    			request.setAttribute("message", "Registration Successful");
+    		}
+    		else {
+    			request.setAttribute("message", "Registation Failed");
+    		}
+    		FormServlet.forwardDispatcher(request, response,"User_Form.jsp");
+    	}
 			
-            else { 
-            	response.sendRedirect("forms_view.jsp?error=invalid_action");
-            }
-    	}
- 
-    	catch (SQLException e) {
-    		e.printStackTrace();
-    		response.sendRedirect("forms_view.jsp?error=db_error");
+    	else { 
+    		request.setAttribute("message","Invalid Action!!!!");
+    		FormServlet.forwardDispatcher(request, response,"User_Form.jsp");
     	}
     }
+ 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        String userIdParam = request.getParameter("userId"); 
-        int userId = 0;
         
         if ("edit".equals(action)) {
-        	userId = Integer.parseInt(userIdParam);
-            String query = "SELECT * FROM user_details WHERE user_id = ?";
-
-            try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD);
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setInt(1, userId);
-                ResultSet rst = stmt.executeQuery();
-
-                if (rst.next()) {
-                    User user = new User(
-                        rst.getInt("user_id"),
-                        rst.getString("first_name"),
-                        rst.getString("last_name"),
-                        rst.getString("date_of_birth"),
-                        rst.getString("gender"),
-                        rst.getString("aadhar_no"),
-                        rst.getString("pan_no"),
-                        rst.getString("email"),
-                        rst.getString("phone"),
-                        rst.getString("address1"),
-                        rst.getString("address2"),
-                        rst.getString("district"),
-                        rst.getString("state"),
-                        rst.getString("country"),
-                        rst.getString("pincode"),
-                        rst.getString("password")
-                    );
-                    request.setAttribute("selectedUser", user);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-                    dispatcher.forward(request, response);
-                    rst.close();
-                }
-                else {
-                    response.sendRedirect("forms_view.jsp?error=user_not_found");
-                }
-            } 
-            catch (SQLException e) {
-                e.printStackTrace();
-                response.sendRedirect("forms_view.jsp?error=db_error");
-            }
+        	int userId = Integer.parseInt(request.getParameter("userId"));
+        	user = dbWorker.setUserInfo(userId);
+        	request.setAttribute("selectedUser", user);
+        	FormServlet.forwardDispatcher(request, response,"User_Form.jsp");
 
         } 
         else if("delete".equals(action)) {
-        	userId = Integer.parseInt(userIdParam);
-            String deleteQuery = "DELETE FROM user_details WHERE user_id = ?";
-
-            try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD);
-            	 PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
-            	
-            	stmt.setInt(1, userId);
-                    
-            	int rowsDeleted = stmt.executeUpdate();
-            	if (rowsDeleted > 0) {
-            		request.setAttribute("message", "Users Deleted Successfully!");
-                }
-            	else {
-            		request.setAttribute("message", "Deletion Failed!");
-                }
-
-                RequestDispatcher dispatcher = request.getRequestDispatcher("FormServlet?action=view");
-                dispatcher.forward(request, response);
-
-                }
-            catch (SQLException e) {
-				e.printStackTrace();
-				response.sendRedirect("forms_view.jsp?error=db_error");
-			}
+        	int userId = Integer.parseInt(request.getParameter("userId"));
+        	result = dbWorker.deleteUser(userId);
+        	if(result) {
+    			request.setAttribute("message", "Users Deleted Successfully!");
+    		}
+    		else {
+    			request.setAttribute("message", "Deletion Failed");
+    		}
+    		FormServlet.forwardDispatcher(request, response,"FormServlet?action=view");
         }
 
         else if("view".equals(action)){
-            List<User> users = new ArrayList<>();
-            String query = "SELECT * FROM user_details";
-
-            try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PSWD);
-                 PreparedStatement stmt = conn.prepareStatement(query);
-                 ResultSet rst = stmt.executeQuery()) {
-
-                while (rst.next()) {
-                    User user = new User(
-                        rst.getInt("user_id"),
-                        rst.getString("first_name"),
-                        rst.getString("last_name"),
-                        rst.getString("date_of_birth"),
-                        rst.getString("gender"),
-                        rst.getString("aadhar_no"),
-                        rst.getString("pan_no"),
-                        rst.getString("email"),
-                        rst.getString("phone"),
-                        rst.getString("address1"),
-                        rst.getString("address2"),
-                        rst.getString("district"),
-                        rst.getString("state"),
-                        rst.getString("country"),
-                        rst.getString("pincode"),
-                        rst.getString("password")
-                    );
-                    users.add(user);
-                }
-                request.setAttribute("userList", users);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("forms_view.jsp");
-                dispatcher.forward(request, response);
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-                response.sendRedirect("forms_view.jsp?error=db_error");
-            }
+        	List<User> users = dbWorker.displayUserTable();
+        	request.setAttribute("userList", users);
+        	FormServlet.forwardDispatcher(request, response, "User_Table.jsp");
         }
     }
-
-    public void checkNullField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	if(field==null) {
-    		request.setAttribute("message", "All fields marked with * are required.");
-    	    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    	    dispatcher.forward(request, response);
-    	    return;
-    	}
-    }
     
-    public void checkEmptyField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	if(field.trim().isEmpty()) {
-    		request.setAttribute("message", "All fields marked with * are required.");
-    	    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    	    dispatcher.forward(request, response);
-    	    return;
-    	}
+    public static void forwardDispatcher(HttpServletRequest request, HttpServletResponse response, String JSPName) {
+    	RequestDispatcher dispatcher = request.getRequestDispatcher(JSPName);
+    	try {
+			dispatcher.forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
     }
 
-    public void checkValidEmail(String email,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	
-    	String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-    	Pattern pattern = Pattern.compile(emailRegex);
-    	Matcher matcher = pattern.matcher(email);
-    	if(!(matcher.matches())) {
-    		request.setAttribute("message", "Invalid email format.");
-    		RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    		dispatcher.forward(request, response);
-    		return;
-    	}
-    }
-
-    public void checkValidPhone(String phone,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	
-    	if(!(phone.matches("\\d{10}"))) {
-    		request.setAttribute("message", "Phone number must be 10 digits.");
-    	    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    	    dispatcher.forward(request, response);
-    	    return;
-    	}
-    }
-
-    public void checkValidAadhar(String aadhar,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	
-    	if(!(aadhar.matches("\\d{12}"))) {
-    		request.setAttribute("message", "Aadhar number must be 12 digits.");
-    	    RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    	    dispatcher.forward(request, response);
-    	    return;
-    	}
-    }
-    
-    public void checkValidPAN(String pan,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	
-    	String panRegex = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
-    	Pattern pattern = Pattern.compile(panRegex);
-    	Matcher matcher = pattern.matcher(pan);
-    	if(!(matcher.matches())) {
-    		request.setAttribute("message", "Invalid PAN format.(e.g., ABCDE1234F)");
-    		RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    		dispatcher.forward(request, response);
-    		return;
-    	}
-    }
- 
-    public void checkPasswordStrength(String password,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException,InvalidFormInputException {
-    	String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,20}$";
-    	Pattern pattern = Pattern.compile(passwordRegex);
-    	Matcher matcher = pattern.matcher(password);
-    	if(!(matcher.matches())) {
-    		request.setAttribute("message", "Password must be at least 8 characters with 1 uppercase letter and 1 number.");
-    		RequestDispatcher dispatcher = request.getRequestDispatcher("forms.jsp");
-    		dispatcher.forward(request, response);
-    		return;
-    	}
-    }
 }
+

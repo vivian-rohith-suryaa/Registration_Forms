@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, com.forms.user.User" %>
 
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Expires", "0");
+%>
+
 <% 
 	List<User> users = (List<User>) request.getAttribute("userList");
 %>
@@ -11,7 +17,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Registration Details</title>
-    <link rel="stylesheet" href="view_styles.css">
+    <link rel="stylesheet" href="table_styles.css">
     
     <script>
     	
@@ -20,37 +26,28 @@
         }
     	
     	function deleteUser(userId) {
-    	    let confirmed = confirm("Are you sure you want to delete the selected user(s)?");
+    	    let confirmed = confirm("Are you sure you want to delete the selected user?");
     	    if (!confirmed) return false;
     	   	window.location.href = "FormServlet?action=delete&userId=" + userId;
     	}
     	
-    	function redirectToForms(){
-    		window.location.href = "forms.jsp";
-    	}
-   	
     </script>
 </head>
 <body>
 
-	<header>
-		<div class="banner_holder">
-			<div class="banner_left">
-				<div class="logo_img_holder">
-					<img class="logo-image" src="images/zoho_logo.jpg" alt="Logo">
-				</div>
-				<h1 id="title">Z-Register</h1>
-			</div>
-			<div class="banner_right">
-				<img id="user_add_id" alt="Add User" src="images/user_add.svg" onclick="redirectToForms()" title="Add User">
-			</div>
-		</div>
-	</header>
+	<% request.setAttribute("alternative","Add User"); %>
+	<% request.setAttribute("image","user_add.svg"); %>
+	<% request.setAttribute("action","window.location.href='User_Form.jsp'"); %>
+	<% request.setAttribute("title", "Add-User"); %>
+	<% request.setAttribute("icon_name", "Add User"); %>
+	
+	<%@ include file="Form_Header.jsp"%>
 
     <div class="table_div">
         <h1 id="user_details">User Details</h1>
         	<table class="user_table">
                 <tr class="table_row_header">
+                	<th class="table_header">S.NO</th>
                     <th class="table_header">User ID</th>
                     <th class="table_header">First Name</th>
                     <th class="table_header">Last Name</th>
@@ -64,10 +61,12 @@
 
                 </tr>
                 <%
+                	int serialNo = 1;
                     if (users != null) {
                         for (User user : users) {
                 %>
                 <tr class="table_row_content">
+                	<td class="table_cell"><%=serialNo++ %></td>
                     <td class="table_cell"><%= user.getUserId() %></td>
                     <td class="table_cell"><%= user.getFirstName() %></td>
                     <td class="table_cell"><%= user.getLastName() %></td>
@@ -86,14 +85,6 @@
                 </tr>
                 <%  } } %>
             </table>
-            
-            
-            <% String message = (String) request.getAttribute("message");
-			   if (message != null) { %>
-			   <script>
-			       alert("<%= message %>");
-			   </script>
-			<% } %>
     </div>
 </body>
 </html>

@@ -120,8 +120,16 @@ header{
 	height: 30px;
 }
 
+#edit_id:hover{
+	cursor: pointer;
+}
+
 
 #bin_id{
 	width: 30px;
 	height: 30px;
+}
+
+#bin_id:hover{
+	cursor: pointer;
 }
