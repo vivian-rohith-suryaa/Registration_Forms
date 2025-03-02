@@ -89,11 +89,11 @@ if (user == null) {
 							</div>
 						</div>
 					</div>
-
-					<div class="form-row">
+<!-- pattern="\d{12}"
+ -->					<div class="form-row">
 						<div class="form-group">
 							<label class="generic_label" for="aadhar">Aadhar Number:<span style="color: red; font-weight: bold; margin-left: 5px;">*</span></label>
-							<input class="form_input" type="text" id="aadhar" name="aadhar" value="<%=user.getAadhar() != null ? user.getAadhar() : ""%>" placeholder="Aadhar_Number" required pattern="\d{12}" title="Aadhar must be exactly 12 digits">
+							<input class="form_input" type="text" id="aadhar" name="aadhar" value="<%=user.getAadhar() != null ? user.getAadhar() : ""%>" placeholder="Aadhar_Number" required  title="Aadhar must be exactly 12 digits">
 						</div>
 
 						<div class="form-group">

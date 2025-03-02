@@ -1,120 +1,74 @@
 package com.forms.util;
 
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.forms.exception.InvalidInputException;
 
 public class ValidationUtil {
 
-	 public static boolean checkNullField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	 public static void checkNullField(String field) throws InvalidInputException{
 		 
 		 if(field==null) {
-	    	request.setAttribute("message", "All fields marked with * are required.");
-	    	RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-	    	dispatcher.forward(request, response);
-	    	return true;
+	    	throw new InvalidInputException("All fields marked with * are required.");
 	    }
-		 return false;
 	 } 
 	 
-	 public static boolean checkEmptyField(String field,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	 public static void checkEmptyField(String field) throws InvalidInputException {
 		 
-		 checkNullField(field, request, response);
+		 checkNullField(field);
 		 
 		 if(field.trim().isEmpty()) {
-			 request.setAttribute("message", "All fields marked with * are required.");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+			 throw new InvalidInputException("All fields marked with * are required.");
 		 }
-		 return false;
 	 } 
 	
-	 public static boolean checkValidEmail(String email,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 public static void checkValidEmail(String email) throws InvalidInputException{
 		 
-		 checkEmptyField(email,request,response);
+		 checkEmptyField(email);
 
-		 String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-		 Pattern pattern = Pattern.compile(emailRegex);
-		 Matcher matcher = pattern.matcher(email);
-		 if(!(matcher.matches())) {
-			 request.setAttribute("message", "Invalid email format.");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+		 if(!(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"))) {
+			 throw new InvalidInputException("Invalid email format.");
 		 }
-		 return false;
 	 }
 
-	 public static boolean checkValidPhone(String phone,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 public static void checkValidPhone(String phone) throws InvalidInputException {
 	    
-		 checkEmptyField(phone,request,response);
+		 checkEmptyField(phone);
 		 if(!(phone.matches("\\d{10}"))) {
-			 request.setAttribute("message", "Phone number must be 10 digits.");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+			 throw new InvalidInputException("Phone number must be 10 digits.");
 		 }
-		 return false;
 	 }
 
-	 public static boolean checkValidAadhar(String aadhar,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 public static void checkValidAadhar(String aadhar) throws InvalidInputException {
 		 
-		 checkEmptyField(aadhar,request,response);
+		 checkEmptyField(aadhar);
 		 if(!(aadhar.matches("\\d{12}"))) {
-			 request.setAttribute("message", "Aadhar number must be 12 digits.");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+			 throw new InvalidInputException("Aadhar number must be 12 digits.");
 		 }
-		 return false;
+
 	 }
 	    
-	 public static boolean checkValidPAN(String pan,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 public static void checkValidPAN(String pan) throws InvalidInputException {
 	    
-		 checkEmptyField(pan,request,response);
-		 String panRegex = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
-		 Pattern pattern = Pattern.compile(panRegex);
-		 Matcher matcher = pattern.matcher(pan);
-		 if(!(matcher.matches())) {
-			 request.setAttribute("message", "Invalid PAN format.(e.g., ABCDE1234F)");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+		 checkEmptyField(pan);
+		 if(!(pan.matches("^[A-Z]{5}[0-9]{4}[A-Z]{1}$"))) {
+			 throw new InvalidInputException("Invalid PAN format.(e.g., ABCDE1234F)");
 		 }	
-		 return false;
 	 }
 	 
-	 public static boolean checkPasswordStrength(String password,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 public static void checkPasswordStrength(String password) throws InvalidInputException{
 		 
-		 checkEmptyField(password,request,response);
-		 String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,20}$";
-		 Pattern pattern = Pattern.compile(passwordRegex);
-		 Matcher matcher = pattern.matcher(password);
-		 if(!(matcher.matches())) {
-			 request.setAttribute("message", "Password must be at least 8 characters with 1 uppercase letter and 1 number.");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+		 checkEmptyField(password);
+		 if(!(password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,20}$"))) {
+			 throw new InvalidInputException("Password must be at least 8 characters with 1 uppercase letter and 1 number.");
 		 }	
-		 return false;
 	 }
 	    
-	 public static boolean matchPassword(String password, String confirmPassword,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 public static void matchPassword(String password, String confirmPassword) throws InvalidInputException {
 		 
-		 checkEmptyField(password,request,response);
-		 checkEmptyField(confirmPassword,request,response);
+		 checkEmptyField(password);
+		 checkEmptyField(confirmPassword);
 		 
 		 if(!(confirmPassword.equals(password))) {
-			 request.setAttribute("message", "Passwords do not match.");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("User_Form.jsp");
-			 dispatcher.forward(request, response);
-			 return true;
+			 throw new InvalidInputException("Passwords do not match.");
 		 }
-		 return false;
 	 }
 }

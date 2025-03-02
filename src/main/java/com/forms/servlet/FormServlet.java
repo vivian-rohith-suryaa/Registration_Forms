@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.forms.db.DBUtil;
+import com.forms.exception.InvalidInputException;
 import com.forms.util.ValidationUtil;
 import com.forms.user.User;
 
@@ -58,37 +59,43 @@ public class FormServlet extends HttpServlet {
    	    String pincode = request.getParameter("pincode");
     	String password = request.getParameter("setpassword");
     	String confirmPassword = request.getParameter("confirmpassword");
-	    	 
-    	if(ValidationUtil.checkEmptyField(firstName, request, response)) {return;}
 	    	
-    	if(ValidationUtil.checkEmptyField(lastName, request, response)){return;}
+    	try {
+	    	ValidationUtil.checkEmptyField(firstName);
+		    	
+	    	ValidationUtil.checkEmptyField(lastName);
+		    	
+	    	ValidationUtil.checkEmptyField(dob);
+		    	
+	    	ValidationUtil.checkEmptyField(gender);
+		    	
+	    	ValidationUtil.checkEmptyField(aadhar);
+		    	
+	    	ValidationUtil.checkEmptyField(pan);
+		    	
+	    	ValidationUtil.checkEmptyField(email);
+		    	
+	    	ValidationUtil.checkEmptyField(phone);
+		
+	    	ValidationUtil.checkEmptyField(password);
 	    	
-    	if(ValidationUtil.checkEmptyField(dob, request, response)) {return;}
+	    	ValidationUtil.checkValidAadhar(aadhar);
 	    	
-    	if(ValidationUtil.checkEmptyField(gender, request, response)) {return;}
+	    	ValidationUtil.checkValidPAN(pan);
+		    	
+	    	ValidationUtil.checkValidEmail(email);
+		    	
+	    	ValidationUtil.checkValidPhone(phone);
+		    	
+	    	ValidationUtil.checkPasswordStrength(password);
 	    	
-    	if(ValidationUtil.checkEmptyField(aadhar, request, response)) {return;}
+	    	ValidationUtil.matchPassword(password, confirmPassword);
+    	}
+    	catch(InvalidInputException e) {
+    		request.setAttribute("message", e.getMessage());
+    	    FormServlet.forwardDispatcher(request, response, "User_Form.jsp");
+    	}
 	    	
-    	if(ValidationUtil.checkEmptyField(pan, request, response)) {return;}
-	    	
-    	if(ValidationUtil.checkEmptyField(email, request, response)) {return;}
-	    	
-    	if(ValidationUtil.checkEmptyField(phone, request, response)) {return;}
-	
-    	if(ValidationUtil.checkEmptyField(password, request, response)) {return;}
-    	
-    	if(ValidationUtil.checkValidAadhar(aadhar,request,response)) {return;}
-    	
-    	if(ValidationUtil.checkValidPAN(pan,request,response)) {return;}
-	    	
-    	if(ValidationUtil.checkValidEmail(email,request,response)) {return;}
-	    	
-    	if(ValidationUtil.checkValidPhone(phone,request,response)) {return;}
-	    	
-    	if(ValidationUtil.checkPasswordStrength(password,request,response)) {return;}
-    	
-    	if(ValidationUtil.matchPassword(password, confirmPassword, request, response)) {return;}
-    	
         user = new User(userId, firstName, lastName, dob, gender, aadhar, pan, email, phone, address1,address2, district, state, country, pincode, password);
     	
     	if ("update".equals(action)) {
