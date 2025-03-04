@@ -20,7 +20,7 @@ if (user == null) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Account Registration</title>
+	<title>Z-Register</title>
 	<link rel="stylesheet" href="form_styles.css">
 </head>
 <body>
